@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.CartMapper">
+
+    <resultMap id="CartEntityMap" type="com.cy.store.entity.Cart">
+        <id column="cid" property="cid"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+    <!-- 插入购物车数据-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cid">
+        insert into t_cart (uid, pid, price, num, created_user, created_time, modified_user, modified_time)
+        values (#{uid}, #{pid}, #{price}, #{num}, #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime})
+    </insert>
+
+    <!-- 修改购物车数据中商品的数量-->
+    <update id="updateNumByCid">
+        update t_cart set
+            num=#{num},
+            modified_user=#{modifiedUser},
+            modified_time=#{modifiedTime}
+        where cid=#{cid}
+    </update>
+
+    <!-- 根据用户id和商品id查询购物车中的数据-->
+    <select id="findByUidAndPid" resultMap="CartEntityMap">
+        select * from t_cart where uid=#{uid} AND pid=#{pid}
+    </select>
+
+
+
+
+    <!-- 查询某用户的购物车数据：List<CartVO> findVOByUid(Integer uid) -->
+    <select id="findVOByUid" resultType="com.cy.store.entity.VO.CartVO">
+       select cid,uid, pid,t_cart.price,t_cart.num, title,t_product.price as realPrice, image
+       from t_cart
+       left join t_product on t_cart.pid = t_product.id
+       where
+    	   uid = #{uid}
+       order by
+    	t_cart.created_time desc
+    </select>
+
+
+    <select id="findByCid" resultType="com.cy.store.entity.Cart">
+         select * from t_cart where cid=#{cid}
+    </select>
+
+    <select id="findVOByCids" resultType="com.cy.store.entity.VO.CartVO">
+        select
+        cid,
+        uid,
+        pid,
+        t_cart.price,
+        t_cart.num,
+        title,
+        t_product.price as realPrice,
+        image
+        from t_cart
+        left join t_product on t_cart.pid = t_product.id
+        where
+        cid in (
+        <foreach collection="array" item="cid" separator=",">
+            #{cid}
+        </foreach>
+        )
+        order by
+        t_cart.created_time desc
+    </select>
+
+
+</mapper>

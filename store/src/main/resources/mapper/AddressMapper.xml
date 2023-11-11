@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.AddressMapper">
+    <resultMap id="AddressEntityMap" type="com.cy.store.entity.Address">
+        <id column="aid" property="aid"/>
+        <result column="province_name" property="provinceName"/>
+        <result column="province_code" property="provinceCode"/>
+        <result column="city_name" property="cityName"/>
+        <result column="city_code" property="cityCode"/>
+        <result column="area_name" property="areaName"/>
+        <result column="area_code" property="areaCode"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="aid">
+        INSERT INTO t_address (
+            uid, name, province_name, province_code, city_name, city_code, area_name, area_code, zip,
+            address, phone, tel,tag, is_default, created_user, created_time, modified_user, modified_time
+        ) VALUES (
+            #{uid}, #{name}, #{provinceName}, #{provinceCode}, #{cityName}, #{cityCode}, #{areaName},
+            #{areaCode}, #{zip}, #{address}, #{phone}, #{tel}, #{tag}, #{isDefault}, #{createdUser},
+            #{createdTime}, #{modifiedUser}, #{modifiedTime}
+        )
+    </insert>
+
+
+        <!--resultType="java.lang.Integer"不写会报错,因为Integer不是基本数据类型-->
+    <select id="countByUid"  resultType="java.lang.Integer">
+        select count(*) from t_address where uid=#{uid}
+    </select>
+
+<!--其中order by is_default DESC是为了让默认收货地址展示在最上面,order by可以有多个字句,中间用逗号隔开,后面加的create_time DESC是为了让非默认收货地址创建的越晚越展示在上面-->
+    <select id="findByUid" resultType="com.cy.store.entity.Address">
+        select * from t_address where uid=#{uid} order by is_default DESC,created_time DESC
+    </select>
+
+<!--       设置默认收货地址-->
+
+    <select id="findByAid" resultMap="AddressEntityMap">
+        select * from t_address where aid=#{aid}
+    </select>
+
+    <update id="updateNonDefault">
+        update t_address set is_default=0 where uid=#{uid}
+    </update>
+
+    <update id="updateDefaultByAid">
+        update t_address set is_default=1,modified_user=#{modifiedUser},modified_time=#{modifiedTime}
+        where aid=#{aid}
+    </update>
+
+    <delete id="deleteByAid">
+    delete from t_address where aid=#{aid}
+</delete>
+
+    <select id="findLastModified" resultMap="AddressEntityMap">
+    select * from t_address
+    where uid=#{uid}
+    order by modified_time DESC limit 0,1
+</select>
+
+
+</mapper>

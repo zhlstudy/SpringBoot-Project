@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.UserMapper">
+    <!--在sql语句的最上面借助ResultMap标签来自定义映射规则
+        id属性:表示给这个映射规则分配一个唯一的id值,对应的就是resultMap="id属性值"
+        type属性:取值是一个类,表示数据库中的查询结果与java中哪个实体类进行结果集的映射
+     -->
+    <resultMap id="UserEntityMap" type="com.cy.store.entity.User">
+        <!--将表的字段和类的属性名不一致的进行匹配指定,名称一致的也可以指定,但没必要
+                但是,在定义映射规则时无论主键名称是否一致都不能省
+                column属性:表示表中的字段名称
+                property属性:表示类中的属性名称
+                -->
+        <id column="uid" property="uid"></id>
+        <result column="is_delete" property="isDelete"></result>
+        <result column="created_User" property="createdUser"></result>
+        <result column="created_time" property="createdTime"></result>
+        <result column="modified_user" property="modifiedUser"></result>
+        <result column="modified_time" property="modifiedTime"></result>
+    </resultMap>
+
+    <!--id属性:表示映射的接口中方法的名称,直接标签的内容部来编写SQL语句-->
+    <!--useGeneratedKeys="true"表示开启某个字段的值递增(大部分都是主键递增)
+        keyProperty="uid"表示将表中哪个字段进行递增
+        -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="uid">
+        insert into t_user(username,password,salt,phone,email,gender,avatar,is_delete,created_user,created_time,modified_user,modified_time
+        ) values (#{username},#{password},#{salt},#{phone},#{email},#{gender},#{avatar},#{isDelete},#{createdUser},#{createdTime},#{modifiedUser},#{modifiedTime})
+    </insert>
+
+    <update id="updatePasswordByUid">
+        update  t_user set password=#{password},modified_user=#{modifiedUser},modified_time=#{modifiedTime} where uid=#{uid}
+    </update>
+
+    <select id="findByUid" resultMap="UserEntityMap">
+        select uid,username,password,salt,phone,email,gender,avatar,is_delete,created_user,created_time,modified_user,modified_time from t_user where uid=#{uid}
+    </select>
+
+
+    <!--if是条件判断标签,属性test接受的是一个返回值为boolean类型的条件,
+            如果test条件的结果为true则执行if标签内部的语句,注意逗号也要在标签内-->
+    <update id="UpdateInfoByUid">
+        update t_user set
+        <if test="phone!=null and phone!=''">phone=#{phone},</if>
+        <if test="email!=null and email!=''">email=#{email},</if>
+        <if test="gender!=null and gender!=''">gender=#{gender},</if>
+        modified_user=#{modifiedUser},modified_time=#{modifiedTime} where uid=#{uid}
+    </update>
+
+<!--    头像-->
+    <update id="updateAvatarByUid">
+        update t_user set avatar=#{avatar},modified_user=#{modifiedUser},modified_time=#{modifiedTime} where uid=#{uid}
+    </update>
+
+
+    <!--select语句在执行的时候查询的结果无非两种:一个对象或多个对象
+        resultType:表示查询的结果集类型,用来指定对应映射类的类型,且包含完整的包结构,但此处不能是resultType="com.cy.store.entity.User",因为这种写法要求表的字段的名字和类的属性名一模一样
+        resultMap:表示当表的字段和类的对象属性名不一致时,来自定义查询结果集的映射规则
+    -->
+    <select id="findByUsername" resultMap="UserEntityMap" resultType="com.cy.store.entity.User">
+        select * from t_user where username=#{username}
+    </select>
+</mapper>

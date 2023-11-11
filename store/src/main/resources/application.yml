@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?serverTimezone=UTC&useSSL=false
+    password: root
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jackson:
+#    default-property-inclusion: NON_NULL  #服务器响应的数据为null，则过滤该字段
+
+
+#MyBatis开启驼峰映射
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml    #指定配置文件的映射位置，即xml文件的位置
+
+
+#定义一个最大收货地址数量,可以在配置文件
+user.address.max-count: 20

@@ -1,0 +1,5 @@
+INSERT INTO `t_cart` (`cid`, `uid`, `pid`, `price`, `num`, `created_user`, `created_time`, `modified_user`, `modified_time`) VALUES (1, 11, 10000001, 4, 9, NULL, NULL, 'Tom', '2023-10-11 02:42:57');
+INSERT INTO `t_cart` (`cid`, `uid`, `pid`, `price`, `num`, `created_user`, `created_time`, `modified_user`, `modified_time`) VALUES (2, 14, 10000001, 23, 4, 'Tom', '2023-10-11 02:43:41', 'admin2', '2023-10-11 13:29:46');
+INSERT INTO `t_cart` (`cid`, `uid`, `pid`, `price`, `num`, `created_user`, `created_time`, `modified_user`, `modified_time`) VALUES (3, 19, 10000001, 23, 2, '小张', '2023-10-12 12:53:44', '小张', '2023-10-12 12:53:49');
+INSERT INTO `t_cart` (`cid`, `uid`, `pid`, `price`, `num`, `created_user`, `created_time`, `modified_user`, `modified_time`) VALUES (4, 21, 10000001, 23, 1, '1', '2023-11-9 02:57:45', '1', '2023-11-10 11:27:05');
+INSERT INTO `t_cart` (`cid`, `uid`, `pid`, `price`, `num`, `created_user`, `created_time`, `modified_user`, `modified_time`) VALUES (5, 20, 10000001, 23, 5, 'admin', '2023-11-10 15:31:37', 'admin', '2023-11-10 15:37:31');
